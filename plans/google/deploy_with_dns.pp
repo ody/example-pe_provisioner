@@ -1,6 +1,6 @@
 # @summary Deploy PE to the cloud with specific DNS additions
 #
-plan pe_provisioner::deploy_with_dns(
+plan pe_provisioner::google::deploy_with_dns(
   String[1]                                 $domain_name,
   String[1]                                 $zone,
   Enum['development', 'production', 'user'] $cluster_profile      = 'development',
@@ -55,7 +55,7 @@ plan pe_provisioner::deploy_with_dns(
   $lb_resource_name = $provisioned['compiler_pool_address'].split('[.]')[1]
 
   # Prepare and run custom Terraform module that will create Cloud DNS records
-  run_task('terraform::initialize', 'localhost', dir => '.terraform/example_pe_dns')
+  run_task('terraform::initialize', 'localhost', dir => '.terraform/example_pe_dns/google')
 
   $dns_tfvars_template = @(TFVARS)
     project      = "<%= $project %>"
@@ -72,7 +72,7 @@ plan pe_provisioner::deploy_with_dns(
     # specific set of data via TF outputs that if replicated will make this plan
     # easily adaptable for use witj multiple cloud providers
     run_plan('terraform::apply',
-      dir           => '.terraform/example_pe_dns',
+      dir           => '.terraform/example_pe_dns/google',
       return_output => true,
       var_file      => $tfvars_file
     )
@@ -96,8 +96,8 @@ plan pe_provisioner::deploy_with_dns(
 
   # Write out the inventory file make post-provisioning actions easier
   run_plan('pecdm::utils::inventory_yaml', {
-    provider       => 'google',
-    ssh_ip_mode    => 'private',
-    windows_runner => pecdm::is_windows()
+    provider    => 'google',
+    ssh_ip_mode => 'private',
+    native_ssh  => pecdm::is_windows(),
   })
 }

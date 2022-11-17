@@ -1,6 +1,6 @@
 # PE Cloud Provisioning Bolt Project for Example Organization
 
-A sample Bolt Project that might be used by a hypothetical Example organization which augments [puppetlabs/pecdm](https://github.com/puppetlabs/puppetlabs-pecdm) to deploy Puppet Enterprise to Google Cloud Platform with an organization owned DNS zone managed by GCP Cloud DNS.
+A sample Bolt Project that might be used by a hypothetical Example organization which augments [puppetlabs/pecdm](https://github.com/puppetlabs/puppetlabs-pecdm) to deploy Puppet Enterprise to Google Cloud Platform or AWS with an organization owned DNS zone managed by GCP Cloud DNS or Route53.
 
 **Table of Contents**
 
@@ -19,7 +19,8 @@ It is impossible for pecdm and peadm to support all user requirements for deploy
 
 1. Clone this repository: `git clone https://github.com/ody/example-pe_provisioner.git && cd example-pe_provisioner`
 2. Install module dependencies: `bolt module install --no-resolve`
-3. Run plan: `bolt plan run pe_provisioner::deploy_with_dns zone=example domain_name=example.com project=example ssh_user=john.doe`
+3. For GCP run plan: `bolt plan run pe_provisioner::google::deploy_with_dns zone=example domain_name=example.com project=example ssh_user=john.doe`
+3. For AWS run plan: `bolt plan run pe_provisioner::aws::deploy_with_dns domain_name=example.com firewall_allow='["1.2.3.4/32"]'`
 4. Input a PE console password when asked
 5. Wait...
 
